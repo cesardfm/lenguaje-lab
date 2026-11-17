@@ -1,0 +1,19 @@
+// peine.lab — solo pasillos, construidos con un bucle
+
+laberinto "El peine" {
+    texto "Siete pasillos verticales y dos galerías."
+          "Solo uno de los dientes llega abajo."
+
+    tamaño 17 13
+
+    pasillo (1, 1) -> (15, 1)
+    pasillo (1, 11) -> (15, 11)
+
+    repetir i en 0..6 {
+        pasillo (1 + i * 2, 1) -> (1 + i * 2, 5)
+    }
+    pasillo (5, 5) -> (5, 11)
+
+    entrada (1, 1)
+    salida  (15, 11)
+}

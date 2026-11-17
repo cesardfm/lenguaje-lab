@@ -1,0 +1,11 @@
+// Error SEMÁNTICO de alcanzabilidad: compila todo lo demás,
+// pero no hay camino de la entrada a la salida.
+// Lo detecta la fase de generación recorriendo el laberinto.
+
+laberinto "Roto" {
+    tamaño 13 7
+    pasillo (1,1) -> (4,1)
+    pasillo (8,5) -> (11,5)
+    entrada (1,1)
+    salida  (11,5)
+}

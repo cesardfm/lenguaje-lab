@@ -1,0 +1,18 @@
+// casa.lab — tres cuartos y un pasillo que los une
+
+var margen = 1
+
+laberinto "La casa" {
+    texto "Tres cuartos arriba y un pasillo que los conecta por abajo."
+
+    tamaño 17 9
+
+    repetir i en 0..2 {
+        sala    (margen + i * 5, 1) 4 3
+        pasillo (margen + 1 + i * 5, 4) -> (margen + 1 + i * 5, 7)
+    }
+    pasillo (2, 7) -> (14, 7)
+
+    entrada (1, 1)
+    salida  (14, 3)
+}

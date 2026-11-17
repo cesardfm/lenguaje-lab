@@ -1,0 +1,9 @@
+// Error LÉXICO: el carácter '?' no pertenece a Σ.
+// El analizador léxico se detiene: no puede ni formar los tokens.
+
+laberinto "Roto" {
+    tamaño 9 ?
+    pasillo (1,1) -> (7,1)
+    entrada (1,1)
+    salida  (7,1)
+}

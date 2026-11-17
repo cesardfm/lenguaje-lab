@@ -1,0 +1,22 @@
+laberinto "El serpentín" {
+    texto "Solo pasillos. Hay callejones sin salida."
+
+    tamaño 19 11
+
+    pasillo (1,1)  -> (17,1)
+    pasillo (17,1) -> (17,3)
+    pasillo (17,3) -> (3,3)
+    pasillo (3,3)  -> (3,5)
+    pasillo (3,5)  -> (15,5)
+    pasillo (15,5) -> (15,7)
+    pasillo (15,7) -> (1,7)
+    pasillo (1,7)  -> (1,9)
+    pasillo (1,9)  -> (17,9)
+
+    pasillo (9,1)  -> (9,3)
+    pasillo (7,5)  -> (7,7)
+    pasillo (11,7) -> (11,9)
+
+    entrada (1,1)
+    salida  (17,9)
+}

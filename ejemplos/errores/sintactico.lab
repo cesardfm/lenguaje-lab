@@ -1,0 +1,10 @@
+// Error SINTÁCTICO: faltan argumentos de 'tamaño'.
+// Los tokens son todos válidos; lo que falla es el ORDEN.
+// La producción exige:  tamaño → "tamaño" expresion expresion
+
+laberinto "Roto" {
+    tamaño 9
+    pasillo (1,1) -> (7,1)
+    entrada (1,1)
+    salida  (7,1)
+}

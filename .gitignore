@@ -1,0 +1,10 @@
+# entorno de Python
+.venv/
+__pycache__/
+*.pyc
+
+# caché de pruebas
+.pytest_cache/
+
+# macOS
+.DS_Store

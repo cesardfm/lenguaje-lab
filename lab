@@ -1,0 +1,128 @@
+#!/usr/bin/env python3
+"""
+lab — compilador del lenguaje LAB.
+
+    lab nuevo mi.lab        crea una plantilla
+    lab jugar mi.lab        compila y lo juegas
+    lab compilar mi.lab     compila y dibuja el laberinto
+    lab compilar mi.lab -o mi.txt    guarda el resultado
+    lab tokens mi.lab       análisis léxico
+    lab arbol mi.lab        árbol de derivación
+
+Los archivos fuente llevan la extensión .lab
+"""
+import os
+import sys
+
+RAIZ = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, RAIZ)
+
+from compilador import (ErrorCompilacion, analizar_lexico, compilar_archivo,  # noqa: E402
+                        construir_ast)
+
+PLANTILLA = '''// {nombre} — un laberinto en lenguaje LAB
+
+laberinto "Sin título" {{
+    texto "Describe aquí el laberinto."
+
+    tamaño 15 9
+
+    sala (1, 1) 5 3
+    sala (9, 5) 5 3
+    pasillo (3, 4) -> (3, 7) -> (11, 7)
+    pasillo (11, 4) -> (11, 5)
+
+    entrada (2, 2)
+    salida  (11, 6)
+}}
+'''
+
+
+def imprimir_arbol(nodo, sangria=0):
+    relleno = "  " * sangria
+    campos = getattr(nodo, "_campos", None)
+    if campos is None:
+        print(f"{relleno}{nodo!r}")
+        return
+    print(f"{relleno}{type(nodo).__name__}")
+    for campo in campos:
+        valor = getattr(nodo, campo)
+        if isinstance(valor, list):
+            print(f"{relleno}  {campo}:")
+            for elemento in valor:
+                imprimir_arbol(elemento, sangria + 2)
+        elif hasattr(valor, "_campos"):
+            print(f"{relleno}  {campo}:")
+            imprimir_arbol(valor, sangria + 2)
+        else:
+            print(f"{relleno}  {campo} = {valor!r}")
+
+
+def main(argv):
+    if len(argv) < 3:
+        print(__doc__)
+        return 1
+    orden, ruta = argv[1], argv[2]
+
+    if orden == "nuevo":
+        if not ruta.endswith(".lab"):
+            print("Los archivos fuente llevan extensión .lab", file=sys.stderr)
+            return 1
+        if os.path.exists(ruta):
+            print(f"{ruta} ya existe; no lo sobrescribo.", file=sys.stderr)
+            return 1
+        with open(ruta, "w", encoding="utf-8") as f:
+            f.write(PLANTILLA.format(nombre=os.path.basename(ruta)))
+        print(f"creado {ruta}\nAhora: lab jugar {ruta}")
+        return 0
+
+    if not os.path.exists(ruta):
+        print(f"No encuentro {ruta!r}.", file=sys.stderr)
+        return 1
+
+    try:
+        if orden == "tokens":
+            with open(ruta, encoding="utf-8") as f:
+                for t in analizar_lexico(f.read()):
+                    print(f"  {t.linea:3d}:{t.columna:<3d} {t.tipo:<12s} {t.valor!r}")
+            return 0
+
+        if orden == "arbol":
+            with open(ruta, encoding="utf-8") as f:
+                imprimir_arbol(construir_ast(f.read()))
+            return 0
+
+        if orden == "jugar":
+            from juego.consola import Juego
+            Juego(compilar_archivo(ruta)).correr()
+            return 0
+
+        if orden == "compilar":
+            laberintos = compilar_archivo(ruta)
+            if "-o" in argv:
+                posicion = argv.index("-o")
+                destino = argv[posicion + 1] if len(argv) > posicion + 1 \
+                    else ruta.rsplit(".", 1)[0] + ".txt"
+                with open(destino, "w", encoding="utf-8") as f:
+                    for laberinto in laberintos:
+                        f.write(f"{laberinto.nombre}\n{laberinto.texto()}\n\n")
+                print(f"{ruta} -> {destino}  ({len(laberintos)} laberinto(s))")
+                return 0
+            for laberinto in laberintos:
+                print(f"\n{laberinto.nombre}  ({laberinto.ancho} x {laberinto.alto})")
+                if laberinto.descripcion:
+                    print(laberinto.descripcion)
+                print()
+                print(laberinto.dibujar(color=sys.stdout.isatty()))
+            return 0
+
+    except ErrorCompilacion as error:
+        print(f"{os.path.basename(ruta)}:\n\n{error}", file=sys.stderr)
+        return 1
+
+    print(__doc__)
+    return 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main(sys.argv))

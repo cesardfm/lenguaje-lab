@@ -1,0 +1,18 @@
+// video.lab — el laberinto de la demostración
+
+var m = 1
+
+laberinto "La casa" {
+    texto "Tres cuartos y un pasillo."
+
+    tamaño 17 9
+
+    repetir i en 0..2 {
+        sala    (m + i * 5, 1) 4 3
+        pasillo (m + 1 + i * 5, 4) -> (m + 1 + i * 5, 7)
+    }
+    pasillo (2, 7) -> (14, 7)
+
+    entrada (1, 1)
+    salida  (14, 3)
+}

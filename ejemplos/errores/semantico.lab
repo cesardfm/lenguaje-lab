@@ -1,0 +1,10 @@
+// Error SEMÁNTICO: la variable 'ancho' no está declarada.
+// Sintácticamente es correcto: un IDENT es una expresion válida.
+// Lo que falla solo se sabe mirando OTRA parte del archivo.
+
+laberinto "Roto" {
+    tamaño ancho 5
+    pasillo (1,1) -> (7,1)
+    entrada (1,1)
+    salida  (7,1)
+}
